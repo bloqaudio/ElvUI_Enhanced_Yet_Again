@@ -1,4 +1,4 @@
-## Interface: 120005
+## Interface: 120007
 ## Title: |cff1784d1ElvUI|r Enhanced (Yet) Again
 ## Author: bloqaudio
 ## Version: 4.3.19
