@@ -31,48 +31,6 @@ local FILTERED_TEXTURE_PATTERNS = {
 	"white8x8",
 }
 
-local DECORATION_TEXTURE_PATTERNS = {
-	"glow",
-	"overlay",
-	"toast",
-}
-
-local DECORATION_REGION_PATTERNS = {
-	"background",
-	"border",
-	"circleglow",
-	"glow",
-	"highlight",
-	"iconoverlay",
-	"loopingglow",
-	"overlay",
-	"pulse",
-	"sidetoast",
-	"softbuttonglow",
-	"toast",
-}
-
-local DECORATION_TEXTURE_KEYS = {
-	"AlertBG",
-	"Background",
-	"Border",
-	"CircleGlow",
-	"Glow",
-	"GlowTexture",
-	"Highlight",
-	"IconOverlay",
-	"IconOverlay2",
-	"LoopingGlow",
-	"Overlay",
-	"OverlayTexture",
-	"Pulse",
-	"PulseTexture",
-	"Ring",
-	"RingTexture",
-	"SideToastGlow",
-	"SoftButtonGlow",
-}
-
 local ignoreButtons = {
 	"AsphyxiaUIMinimapHelpButton",
 	"AsphyxiaUIMinimapVersionButton",
@@ -144,11 +102,6 @@ end
 local function GetTextureAsset(region)
 	if not region then return nil end
 
-	local atlas = region.GetAtlas and region:GetAtlas()
-	if atlas and atlas ~= "" then
-		return strlower(tostring(atlas))
-	end
-
 	local texture = region.GetTextureFileID and region:GetTextureFileID()
 	if texture then
 		return texture
@@ -167,41 +120,13 @@ local function IsFilteredTexture(texture)
 		return FILTERED_TEXTURE_FILEIDS[texture] == true
 	elseif type(texture) == "string" then
 		for i = 1, #FILTERED_TEXTURE_PATTERNS do
-			if texture:find(FILTERED_TEXTURE_PATTERNS[i], 1, true) then
+			if texture:find(FILTERED_TEXTURE_PATTERNS[i]) then
 				return true
 			end
 		end
 	end
 
 	return false
-end
-
-local function HasPattern(value, patterns)
-	if not value then
-		return false
-	end
-
-	value = strlower(tostring(value))
-	for i = 1, #patterns do
-		if value:find(patterns[i], 1, true) then
-			return true
-		end
-	end
-
-	return false
-end
-
-local function IsDecorativeTexture(region)
-	if not IsTextureObject(region) then
-		return false
-	end
-
-	if HasPattern(region:GetName(), DECORATION_REGION_PATTERNS) then
-		return true
-	end
-
-	local texture = GetTextureAsset(region)
-	return IsFilteredTexture(texture) or (type(texture) == "string" and HasPattern(texture, DECORATION_TEXTURE_PATTERNS))
 end
 
 local function HasRenderableTexture(texture)
@@ -310,10 +235,6 @@ local function GetPrimaryButtonTexture(frame, name)
 			return nil
 		end
 
-		if IsDecorativeTexture(region) then
-			return nil
-		end
-
 		local texture = GetTextureAsset(region)
 		if not HasRenderableTexture(texture) then
 			return nil
@@ -323,10 +244,10 @@ local function GetPrimaryButtonTexture(frame, name)
 		local regionName = region:GetName()
 		if regionName then
 			regionName = strlower(regionName)
-			if HasPattern(regionName, DECORATION_REGION_PATTERNS) then
-				score = score - 100
-			elseif regionName:find("icon") then
+			if regionName:find("icon") then
 				score = score + 100
+			elseif regionName:find("background") or regionName:find("border") then
+				score = score - 100
 			end
 		end
 
@@ -416,42 +337,28 @@ local function HideSingleIconChildTextures(frame, primaryTexture, depth)
 	end
 end
 
-local function HideDecorativeChildTextures(frame, primaryTexture, depth)
-	if not frame or depth > 2 then
+local function HideTomCatsButtonDecorations(frame, name)
+	if not name or name:find("TomCats") == nil then
 		return
 	end
 
-	for i = 1, frame:GetNumChildren() do
-		local child = select(i, frame:GetChildren())
-		if child and child ~= primaryTexture then
-			if IsTextureObject(child) then
-				if IsDecorativeTexture(child) then
-					HideTextureObject(child)
-				end
-			elseif child.GetNumRegions then
-				for j = 1, child:GetNumRegions() do
-					local region = select(j, child:GetRegions())
-					if region ~= primaryTexture and IsDecorativeTexture(region) then
-						HideTextureObject(region)
-					end
-				end
-			end
+	local candidates = {
+		frame.Border,
+		frame.IconOverlay,
+		frame.CircleGlow,
+		frame.SoftButtonGlow,
+		frame.SideToastGlow,
+		frame.LoopingGlow,
+		_G[name .. "Border"],
+		_G[name .. "IconOverlay"],
+		_G[name .. "CircleGlow"],
+		_G[name .. "SoftButtonGlow"],
+		_G[name .. "SideToastGlow"],
+		_G[name .. "LoopingGlow"],
+	}
 
-			if child.GetNumChildren then
-				HideDecorativeChildTextures(child, primaryTexture, depth + 1)
-			end
-		end
-	end
-end
-
-local function HideKnownButtonDecorations(frame, name)
-	for i = 1, #DECORATION_TEXTURE_KEYS do
-		local key = DECORATION_TEXTURE_KEYS[i]
-		HideTextureObject(frame[key])
-
-		if name then
-			HideTextureObject(_G[name .. key])
-		end
+	for i = 1, #candidates do
+		HideTextureObject(candidates[i])
 	end
 end
 
@@ -516,19 +423,6 @@ local function OnLeave(self)
 	end
 end
 
-local function HookButtonIconUpdates(frame, name)
-	if not frame or frame.eelMinimapButtonUpdateIconHooked then
-		return
-	end
-
-	if (name == "ExpansionLandingPageMinimapButton" or name == "GarrisonLandingPageMinimapButton") and frame.UpdateIcon then
-		hooksecurefunc(frame, "UpdateIcon", function()
-			MB:ScheduleTimer("SkinMinimapButtons", 0.05)
-		end)
-		frame.eelMinimapButtonUpdateIconHooked = true
-	end
-end
-
 function MB:SkinButton(frame)
 	if not frame then return end
 	if (frame:GetObjectType() ~= "Button") or not frame:IsVisible() then return end
@@ -537,17 +431,13 @@ function MB:SkinButton(frame)
 	if not name then return end
 	local isSingleIconButton = IsSingleIconButtonName(name)
 	local replacementTexture = GetReplacementTexture(name)
-	HookButtonIconUpdates(frame, name)
 	HideButtonStateTextures(frame, name)
 	local primaryTexture = GetPrimaryButtonTexture(frame, name)
 	HideNonPrimaryNormalTexture(frame, name, primaryTexture)
-	if primaryTexture then
-		HideDecorativeChildTextures(frame, primaryTexture, 1)
-	end
 	if isSingleIconButton and primaryTexture then
 		HideSingleIconChildTextures(frame, primaryTexture, 1)
 	end
-	HideKnownButtonDecorations(frame, name)
+	HideTomCatsButtonDecorations(frame, name)
 
 	-- Check ignore lists first (applies to all buttons including whitelisted)
 	for i = 1, #ignoreButtons do
@@ -614,8 +504,8 @@ function MB:SkinButton(frame)
 				else
 				local texture = GetTextureAsset(region)
 				-- Hide border/background textures, reposition icon textures
-				if IsDecorativeTexture(region) then
-					HideTextureObject(region)
+				if IsFilteredTexture(texture) then
+					region:SetTexture(nil)
 				elseif HasRenderableTexture(texture) then
 					if isSingleIconButton and primaryTexture then
 						HideTextureObject(region)
@@ -666,8 +556,8 @@ function MB:SkinButton(frame)
 			else
 				local texture = GetTextureAsset(region)
 
-				if IsDecorativeTexture(region) then
-					HideTextureObject(region)
+				if IsFilteredTexture(texture) then
+					region:SetTexture(nil)
 				elseif HasRenderableTexture(texture) then
 					if name == "GRM_MinimapButton" and frame.GRM_MinimapButtonBorder then
 						frame.GRM_MinimapButtonBorder:Hide()
