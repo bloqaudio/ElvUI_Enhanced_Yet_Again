@@ -38,6 +38,7 @@ PT.tiers["LONG"] = {
 		"The Voidspire",
 		"The Dreamrift",
 		"March on Quel'Danas",
+		"Sporefall",
 }
 PT.tiers["SHORT"] = {
 		"ULD",
@@ -57,6 +58,7 @@ PT.tiers["SHORT"] = {
 		"VS",
 		"DR",
 		"MoQD",
+		"SPF",
 }
 
 PT.bosses = {
@@ -362,6 +364,23 @@ PT.bosses = {
 			},
 			{ -- LFR
 				61300, 61304
+			},
+		},
+	},
+	{ -- Sporefall (single boss: Rotmire) - patch 12.0.7
+		["option"] = "sporefall",
+		["statIDs"] = {
+			{ -- Mythic
+				63236
+			},
+			{ -- Heroic
+				63235
+			},
+			{ -- Normal
+				63234
+			},
+			{ -- LFR
+				63233
 			},
 		},
 	},

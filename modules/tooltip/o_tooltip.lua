@@ -23,6 +23,7 @@ P["eel"]["progression"] = {
         ["voidspire"] = true,
         ["dreamrift"] = true,
         ["queldanas"] = true,
+        ["sporefall"] = true,
     },
 }
 
@@ -141,6 +142,7 @@ local function ConfigTable()
                             voidspire = { order = -31, type = "toggle", name = "The Voidspire" },
                             dreamrift = { order = -30, type = "toggle", name = "The Dreamrift" },
                             queldanas = { order = -29, type = "toggle", name = "March on Quel'Danas" },
+                            sporefall = { order = -28, type = "toggle", name = "Sporefall" },
                         }
                     }
                 },
