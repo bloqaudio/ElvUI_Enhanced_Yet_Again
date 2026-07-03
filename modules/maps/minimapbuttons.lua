@@ -749,7 +749,9 @@ function MB:UpdateLayout()
 	minimapButtonBar:SetSize(E.minimapbuttons.db.buttonSize + 4, E.minimapbuttons.db.buttonSize + 4)
 	
 	local lastFrame, anchor1, anchor2, offsetX, offsetY
-	
+
+	MB.isUpdatingLayout = true
+
 	for i = 1, #moveButtons do
 		local frame = _G[moveButtons[i]]
 		if frame and frame.original then
@@ -810,6 +812,24 @@ function MB:UpdateLayout()
 				end
 				frame:SetPoint(anchor1, minimapButtonBar, anchor1, offsetX, offsetY)
 				if Maxed then ActualButtons = ButtonsPerRow end
+
+				if moveButtons[i] == "GameTimeFrame" and not frame.eelCalendarAnchorHooked then
+					frame.eelCalendarAnchorHooked = true
+					-- Blizzard's calendar code (pending-invite/day-rollover updates)
+					-- periodically re-anchors GameTimeFrame back toward the minimap,
+					-- detaching it from the bar. Re-run the layout when that happens so
+					-- it snaps back automatically instead of only on the next click.
+					-- MB.isUpdatingLayout guards against our own SetPoint above.
+					hooksecurefunc(frame, "SetPoint", function()
+						if MB.isUpdatingLayout or MB.calendarReanchorPending then return end
+						if not E.minimapbuttons or E.minimapbuttons.db.skinStyle == "NOANCHOR" then return end
+						MB.calendarReanchorPending = true
+						MB:ScheduleTimer(function()
+							MB.calendarReanchorPending = false
+							MB:UpdateLayout()
+						end, 0.05)
+					end)
+				end
 			end
 		end
 	end
@@ -837,6 +857,8 @@ function MB:UpdateLayout()
 	else
 		minimapButtonBar.backdrop:Hide()
 	end
+
+	MB.isUpdatingLayout = false
 end
 
 function MB:ChangeMouseOverSetting()
