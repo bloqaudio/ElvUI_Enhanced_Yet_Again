@@ -870,8 +870,6 @@ function MB:ChangeMouseOverSetting()
 end
 
 function MB:SkinMinimapButtons()
-	MB:RegisterEvent("ADDON_LOADED", "StartSkinning")
-
 	if _G['WIM3MinimapButton'] then
 		_G['WIM3MinimapButton']:SetParent(Minimap)
 	end
@@ -908,11 +906,27 @@ function MB:SkinMinimapButtons()
 	MB:UpdateLayout()
 end
 
-function MB:StartSkinning()
-	MB:UnregisterEvent("ADDON_LOADED")
-	-- Scan again to catch late-loading addon buttons
-	MB:ScheduleTimer("SkinMinimapButtons", 2)
-	MB:ScheduleTimer("SkinMinimapButtons", 6)
+function MB:RunQueuedSkinning()
+	MB.skinningTimer = nil
+	MB:SkinMinimapButtons()
+end
+
+function MB:QueueSkinning()
+	if MB.skinningTimer then return end
+
+	-- Let the addon or login event finish creating and positioning its button.
+	MB.skinningTimer = MB:ScheduleTimer("RunQueuedSkinning", 0.05)
+end
+
+function MB:HookLibDBIconRegistration()
+	if MB.libDBIconHooked or not LibDBIcon or not LibDBIcon.Register then return end
+
+	hooksecurefunc(LibDBIcon, "Register", function()
+		if E.minimapbuttons then
+			MB:QueueSkinning()
+		end
+	end)
+	MB.libDBIconHooked = true
 end
 
 function MB:CreateFrames()
@@ -946,7 +960,15 @@ function MB:Initialize()
 		tinsert(ignoreButtons, "GameTimeFrame")
 	end
 
+	self:RegisterEvent("ADDON_LOADED", "QueueSkinning")
+	self:RegisterEvent("PLAYER_LOGIN", "QueueSkinning")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD", "QueueSkinning")
+	self:HookLibDBIconRegistration()
 	self:CreateFrames()
+
+	-- Retain short fallbacks for buttons created by addon-owned startup timers.
+	self:ScheduleTimer("SkinMinimapButtons", 0.5)
+	self:ScheduleTimer("SkinMinimapButtons", 2)
 end
 
 E:RegisterModule(MB:GetName())
