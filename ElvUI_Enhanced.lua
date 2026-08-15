@@ -8,6 +8,7 @@ local EEL = E:NewModule("ElvuiEnhancedAgain", "AceHook-3.0", "AceEvent-3.0", "Ac
 -- WoW 11.x API compatibility
 local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
 local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+local LoadAddOn = C_AddOns and C_AddOns.LoadAddOn
 
 EEL.version = GetAddOnMetadata("ElvUI_Enhanced", "Version")
 EEL.title = format('|cff00c0fa%s|r|cffff8000%s|r|cff00c0fa%s|r', "ElvUI ", "Enhanced ", "(Yet) Again")
@@ -35,8 +36,8 @@ end
 function EEL:OpenGreatVault()
 	if not E.Retail then return end
 
-	if not IsAddOnLoaded("Blizzard_WeeklyRewards") then
-		UIParentLoadAddOn("Blizzard_WeeklyRewards")
+	if not IsAddOnLoaded("Blizzard_WeeklyRewards") and LoadAddOn then
+		LoadAddOn("Blizzard_WeeklyRewards")
 	end
 
 	if WeeklyRewards_ShowUI then
