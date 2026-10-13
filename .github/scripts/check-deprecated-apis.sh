@@ -47,7 +47,7 @@ for match in "${spell_matches[@]}"; do
   fi
 
   case "${file}" in
-    modules/misc/misc.lua|modules/unitframes/healglow.lua|libs/LibRangeCheck-3.0/LibRangeCheck-3.0.lua)
+    libs/LibRangeCheck-3.0/LibRangeCheck-3.0.lua)
       ;;
     *)
       echo "Disallowed GetSpellInfo usage: ${match}"
