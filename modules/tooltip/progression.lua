@@ -39,6 +39,8 @@ PT.tiers["LONG"] = {
 		"The Dreamrift",
 		"March on Quel'Danas",
 		"Sporefall",
+		"The Venomous Abyss",
+		"The Unbinding of Kith'ix",
 }
 PT.tiers["SHORT"] = {
 		"ULD",
@@ -59,6 +61,8 @@ PT.tiers["SHORT"] = {
 		"DR",
 		"MoQD",
 		"SPF",
+		"VA",
+		"UoK",
 }
 
 PT.bosses = {
@@ -381,6 +385,40 @@ PT.bosses = {
 			},
 			{ -- LFR
 				63233
+			},
+		},
+	},
+	{ -- The Venomous Abyss - patch 12.1.0
+		["option"] = "venomousabyss",
+		["statIDs"] = {
+			{ -- Mythic
+				63536, 63540, 63554, 63557, 63560, 63563, 63566, 63569
+			},
+			{ -- Heroic
+				63535, 63539, 63553, 63556, 63559, 63562, 63565, 63568
+			},
+			{ -- Normal
+				63534, 63538, 63552, 63555, 63558, 63561, 63564, 63567
+			},
+			{ -- LFR
+				63533, 63537, 63541, 63547, 63548, 63549, 63550, 63551
+			},
+		},
+	},
+	{ -- The Unbinding of Kith'ix (single boss) - patch 12.1.5
+		["option"] = "kithix",
+		["statIDs"] = {
+			{ -- Mythic
+				63842
+			},
+			{ -- Heroic
+				63841
+			},
+			{ -- Normal
+				63840
+			},
+			{ -- LFR
+				63839
 			},
 		},
 	},

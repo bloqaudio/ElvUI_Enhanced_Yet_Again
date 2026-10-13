@@ -24,6 +24,8 @@ P["eel"]["progression"] = {
         ["dreamrift"] = true,
         ["queldanas"] = true,
         ["sporefall"] = true,
+        ["venomousabyss"] = true,
+        ["kithix"] = true,
     },
 }
 
@@ -143,6 +145,8 @@ local function ConfigTable()
                             dreamrift = { order = -30, type = "toggle", name = "The Dreamrift" },
                             queldanas = { order = -29, type = "toggle", name = "March on Quel'Danas" },
                             sporefall = { order = -28, type = "toggle", name = "Sporefall" },
+                            venomousabyss = { order = -27, type = "toggle", name = "The Venomous Abyss" },
+                            kithix = { order = -26, type = "toggle", name = "The Unbinding of Kith'ix" },
                         }
                     }
                 },
