@@ -45,7 +45,7 @@ jobs:
           set -euo pipefail
           git diff --name-only "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}" -- '*.lua' \
             | while IFS= read -r file; do
-                [[ -f "${file}" ]] && echo "${file}"
+                if [[ -f "${file}" ]]; then echo "${file}"; fi
               done > /tmp/changed_lua_files.txt
           echo "Changed Lua files:"
           cat /tmp/changed_lua_files.txt || true
