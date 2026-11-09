@@ -1,0 +1,18 @@
+## Interface: 16001
+## Title: |cff1784d1ElvUI|r Enhanced (Yet) Again Forever
+## Author: bloqaudio
+## Version: 4.3.24
+## Notes: Plugin-Enhancements for |cff1784d1ElvUI|r.
+## X-Category: Plugins
+## URL: https://github.com/bloqaudio/ElvUI_Enhanced_Yet_Again
+## X-Website: https://github.com/bloqaudio/ElvUI_Enhanced_Yet_Again
+## RequiredDeps: ElvUI
+## DefaultState: Enabled
+## X-ElvVersion: 16.00
+## X-Wago-ID: 5NR8QJK3
+
+libs\load_libs.xml
+locales\load_locales.xml
+ElvUI_Enhanced.lua
+config\load_config.xml
+modules\load_modules_forever.xml

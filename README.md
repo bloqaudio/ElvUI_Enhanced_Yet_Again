@@ -4,11 +4,11 @@
 
 A lightweight plugin for [ElvUI](http://www.tukui.org) that adds essential quality-of-life features without duplicating what ElvUI already does well.
 
-**Requires ElvUI version 13.54 or higher.**
+**Requires ElvUI version 13.54 or higher (16.00 or higher on WoW Forever).**
 
 **Current Version:** 4.3.24
 
-**Supported WoW Versions:** Retail (Midnight 12.x), Wrath Classic (limited feature set, see [Version Support](#version-support))
+**Supported WoW Versions:** Retail (Midnight 12.x), WoW Forever, Wrath Classic (limited feature sets, see [Version Support](#version-support))
 
 ## Installation
 
@@ -51,6 +51,7 @@ All settings are located under the **ElvUI Enhanced (Yet) Again** section in the
 ## Version Support
 
 - **Retail (Midnight 12.x)** — Full feature set.
+- **WoW Forever (1.60.x)** — Location Panel, Minimap Button Bar, Raid Marker Bar, Range datatext, and Paperdoll item level/durability.
 - **Wrath Classic (3.4.3)** — Location Panel, Minimap Button Bar, Raid Marker Bar, and Range datatext only.
 
 ## Contributing

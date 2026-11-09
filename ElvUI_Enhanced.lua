@@ -67,6 +67,9 @@ function EEL:Initialize()
 		if E.Wrath then
 			print(format(L['ENH_LOGIN_MSG_WRATH'], E["media"].hexvaluecolor, EEL.version))
 		end
+		if E.Forever then
+			print(format(L['ENH_LOGIN_MSG_FOREVER'], E["media"].hexvaluecolor, EEL.version))
+		end
 	end	
 	self.initialized = true
 
