@@ -36,7 +36,7 @@ jobs:
             version_url: https://raw.githubusercontent.com/Gethe/wow-ui-source/classic_titan/version.txt
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Check latest ${{ matrix.flavor }} interface
         id: interface
@@ -47,7 +47,7 @@ jobs:
 
       - name: Create or update PR
         if: steps.interface.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: chore/${{ matrix.flavor }}-interface-bump
           delete-branch: false
