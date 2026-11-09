@@ -8,7 +8,7 @@
 ## X-Website: https://github.com/bloqaudio/ElvUI_Enhanced_Yet_Again
 ## RequiredDeps: ElvUI
 ## DefaultState: Enabled
-## X-ElvVersion: 13.54
+## X-ElvVersion: 16.00
 ## X-Wago-ID: 5NR8QJK3
 
 libs\load_libs.xml
