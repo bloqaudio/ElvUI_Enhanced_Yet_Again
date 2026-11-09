@@ -6,7 +6,7 @@ A lightweight plugin for [ElvUI](http://www.tukui.org) that adds essential quali
 
 **Requires ElvUI version 16.00 or higher. Using the latest ElvUI release is recommended.**
 
-**Current Version:** 4.3.25
+**Current Version:** 4.3.26
 
 **Supported WoW Versions:** Every edition current ElvUI supports: Retail (Midnight 12.x), WoW Forever, Mists of Pandaria Classic, Burning Crusade Classic Anniversary, Classic Era, and Titan Reforged - Chrono (feature sets vary, see [Version Support](#version-support))
 
