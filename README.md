@@ -4,7 +4,7 @@
 
 A lightweight plugin for [ElvUI](http://www.tukui.org) that adds essential quality-of-life features without duplicating what ElvUI already does well.
 
-**Requires ElvUI version 13.54 or higher (16.00 or higher on WoW Forever).**
+**Requires ElvUI version 16.00 or higher. Using the latest ElvUI release is recommended.**
 
 **Current Version:** 4.3.25
 
