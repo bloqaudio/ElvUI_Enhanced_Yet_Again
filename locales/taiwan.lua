@@ -6,7 +6,7 @@ if not L then return end
 
 -- Init
 L["ENH_LOGIN_MSG"] = "您正在使用 |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(正式服)|r 版本 %s%s|r."
-L["ENH_LOGIN_MSG_WRATH"] = "您正在使用 |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(巫妖王經典版)|r 版本 %s%s|r."
+L["ENH_LOGIN_MSG_CLASSIC"] = "您正在使用 |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(經典版)|r 版本 %s%s|r."
 L["ENH_LOGIN_MSG_FOREVER"] = "您正在使用 |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(Forever)|r 版本 %s%s|r."
 L["MSG_EEL_ELV_OUTDATED"] = "您的ElvUI版本低於 |cff1784d1ElvUI Enhanced (Yet) Again|r 的建議版本。您的版本是 |cff1784d1%.2f|r (建議版本: |cff1784d1%.2f|r)。請更新ElvUI。"
 

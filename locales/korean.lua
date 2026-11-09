@@ -4,7 +4,7 @@ if not L then return end
 
 -- Init
 L["ENH_LOGIN_MSG"] = "|cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(리테일)|r 버전 %s%s|r을(를) 사용 중입니다."
-L["ENH_LOGIN_MSG_WRATH"] = "|cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(리분클)|r 버전 %s%s|r을(를) 사용 중입니다."
+L["ENH_LOGIN_MSG_CLASSIC"] = "|cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(클래식)|r 버전 %s%s|r을(를) 사용 중입니다."
 L["ENH_LOGIN_MSG_FOREVER"] = "|cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(Forever)|r 버전 %s%s|r을(를) 사용 중입니다."
 L["MSG_EEL_ELV_OUTDATED"] = "ElvUI 버전이 |cff1784d1ElvUI Enhanced (Yet) Again|r 권장 버전보다 낮습니다. 현재 버전: |cff1784d1%.2f|r (권장: |cff1784d1%.2f|r). ElvUI를 업데이트해 주세요."
 
