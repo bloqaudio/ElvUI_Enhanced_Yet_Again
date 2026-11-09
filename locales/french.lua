@@ -6,7 +6,7 @@ if not L then return; end
 
 -- Init
 L["ENH_LOGIN_MSG"] = "Vous utilisez |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(Retail)|r version %s%s|r."
-L["ENH_LOGIN_MSG_WRATH"] = "Vous utilisez |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(Wrath Classic)|r version %s%s|r."
+L["ENH_LOGIN_MSG_CLASSIC"] = "Vous utilisez |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(Classic)|r version %s%s|r."
 L["ENH_LOGIN_MSG_FOREVER"] = "Vous utilisez |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(Forever)|r version %s%s|r."
 L["MSG_EEL_ELV_OUTDATED"] = "Votre version d'ElvUI est plus ancienne que celle recommandée pour |cff1784d1ElvUI Enhanced (Yet) Again|r. Votre version est |cff1784d1%.2f|r (recommandée : |cff1784d1%.2f|r). Veuillez mettre à jour ElvUI."
 

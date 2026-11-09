@@ -64,34 +64,54 @@ jobs:
         id: retail_meta
         run: ./.github/scripts/retail-release-metadata.sh
 
-      - name: Resolve Forever release metadata
-        id: forever_meta
-        env:
-          WOW_UI_VERSION_URL: https://raw.githubusercontent.com/Gethe/wow-ui-source/forever/version.txt
-        run: ./.github/scripts/retail-release-metadata.sh
+      - name: Resolve edition versions
+        id: editions
+        run: |
+          set -euo pipefail
+          resolve() {
+            WOW_UI_VERSION_URL="https://raw.githubusercontent.com/Gethe/wow-ui-source/$2/version.txt" GITHUB_OUTPUT= \
+              ./.github/scripts/retail-release-metadata.sh | sed -n "s/^retail_version=/$1=/p" >> "${GITHUB_OUTPUT}"
+          }
+          resolve forever forever
+          resolve classic classic_era
+          resolve bcc classic_anniversary
+          resolve mists classic
+          resolve titan classic_titan
 
-      - name: Verify Forever version exists on CurseForge
+      - name: Verify edition versions exist on CurseForge
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-          FOREVER_VERSION: ${{ steps.forever_meta.outputs.retail_version }}
+          FOREVER_VERSION: ${{ steps.editions.outputs.forever }}
+          CLASSIC_VERSION: ${{ steps.editions.outputs.classic }}
+          BCC_VERSION: ${{ steps.editions.outputs.bcc }}
+          MISTS_VERSION: ${{ steps.editions.outputs.mists }}
+          TITAN_VERSION: ${{ steps.editions.outputs.titan }}
         run: |
           set -euo pipefail
           # The upload action silently drops unknown version names.
-          FOREVER_TYPE_ID=88568
-          if ! curl -fsS -H "X-Api-Token: ${CURSEFORGE_TOKEN}" https://wow.curseforge.com/api/game/versions \
-            | jq -e --argjson t "${FOREVER_TYPE_ID}" --arg v "${FOREVER_VERSION}" \
-              'any(.[]; .gameVersionTypeID == $t and .name == $v)' >/dev/null; then
-            echo "CurseForge has no Forever game version ${FOREVER_VERSION} yet" >&2
-            exit 1
-          fi
+          VERSIONS=$(curl -fsS -H "X-Api-Token: ${CURSEFORGE_TOKEN}" https://wow.curseforge.com/api/game/versions)
+          check() {
+            if ! jq -e --argjson t "$2" --arg v "$3" \
+              'any(.[]; .gameVersionTypeID == $t and .name == $v)' <<< "${VERSIONS}" >/dev/null; then
+              echo "CurseForge has no $1 game version '$3' yet" >&2
+              exit 1
+            fi
+          }
+          check Forever 88568 "${FOREVER_VERSION}"
+          check "Classic Era" 67408 "${CLASSIC_VERSION}"
+          check "Burning Crusade Classic Anniversary" 73246 "${BCC_VERSION}"
+          check "Mists of Pandaria Classic" 79434 "${MISTS_VERSION}"
+          check "Titan Reforged" 81212 "${TITAN_VERSION}"
 
       - name: Resolve Wago patches
         id: wago_patch
         run: |
           set -euo pipefail
           GAME_DATA=$(curl -fsSL https://addons.wago.io/api/data/game)
-          echo "retail=$(jq -r '.live_patches.supported_retail_patches' <<< "${GAME_DATA}")" >> "${GITHUB_OUTPUT}"
-          echo "forever=$(jq -r '.live_patches.supported_forever_patches' <<< "${GAME_DATA}")" >> "${GITHUB_OUTPUT}"
+          for t in retail forever classic bc mop titan; do
+            v=$(jq -er --arg k "supported_${t}_patches" '.live_patches[$k]' <<< "${GAME_DATA}")
+            echo "${t}=${v}" >> "${GITHUB_OUTPUT}"
+          done
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -110,7 +130,7 @@ jobs:
           game_endpoint: wow
           file_path: ${{ steps.package.outputs.artifact }}
           display_name: ElvUI Enhanced (Yet) Again ${{ env.RELEASE_TAG }}
-          game_versions: "${{ steps.retail_meta.outputs.retail_version }},88568:${{ steps.forever_meta.outputs.retail_version }}"
+          game_versions: "${{ steps.retail_meta.outputs.retail_version }},88568:${{ steps.editions.outputs.forever }},67408:${{ steps.editions.outputs.classic }},73246:${{ steps.editions.outputs.bcc }},79434:${{ steps.editions.outputs.mists }},81212:${{ steps.editions.outputs.titan }}"
           release_type: release
           changelog: "See release notes at https://github.com/bloqaudio/ElvUI_Enhanced_Yet_Again/releases/tag/${{ env.RELEASE_TAG }}"
           changelog_type: text
@@ -131,7 +151,11 @@ jobs:
             --arg changelog "See release notes at https://github.com/bloqaudio/ElvUI_Enhanced_Yet_Again/releases/tag/${RELEASE_TAG}" \
             --arg retail "${{ steps.wago_patch.outputs.retail }}" \
             --arg forever "${{ steps.wago_patch.outputs.forever }}" \
-            '{label:$label,stability:"stable",changelog:$changelog,supported_retail_patches:[$retail],supported_forever_patches:[$forever]}')
+            --arg classic "${{ steps.wago_patch.outputs.classic }}" \
+            --arg bc "${{ steps.wago_patch.outputs.bc }}" \
+            --arg mop "${{ steps.wago_patch.outputs.mop }}" \
+            --arg titan "${{ steps.wago_patch.outputs.titan }}" \
+            '{label:$label,stability:"stable",changelog:$changelog,supported_retail_patches:[$retail],supported_forever_patches:[$forever],supported_classic_patches:[$classic],supported_bc_patches:[$bc],supported_mop_patches:[$mop],supported_titan_patches:[$titan]}')
 
           curl -fsS -X POST \
             -H "Authorization: Bearer ${WAGO_API_TOKEN}" \

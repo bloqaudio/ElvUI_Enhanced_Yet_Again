@@ -21,7 +21,7 @@ A clear and concise description of what you expected to happen.
 Please list the character used when the issue happens.
 
 **Game flavor / build**
-- Retail, Forever, or Wrath
+- Retail, Forever, Mists Classic, TBC Anniversary, Classic Era, or Titan Reforged
 - Patch/build if known
 
 **Addon versions**

@@ -8,7 +8,7 @@ A lightweight plugin for [ElvUI](http://www.tukui.org) that adds essential quali
 
 **Current Version:** 4.3.25
 
-**Supported WoW Versions:** Retail (Midnight 12.x), WoW Forever, Wrath Classic (limited feature sets, see [Version Support](#version-support))
+**Supported WoW Versions:** Every edition current ElvUI supports: Retail (Midnight 12.x), WoW Forever, Mists of Pandaria Classic, Burning Crusade Classic Anniversary, Classic Era, and Titan Reforged - Chrono (feature sets vary, see [Version Support](#version-support))
 
 ## Installation
 
@@ -52,7 +52,9 @@ All settings are located under the **ElvUI Enhanced (Yet) Again** section in the
 
 - **Retail (Midnight 12.x)** — Full feature set.
 - **WoW Forever (1.60.x)** — Location Panel, Minimap Button Bar, Raid Marker Bar, Range datatext, and Paperdoll item level/durability.
-- **Wrath Classic (3.4.3)** — Location Panel, Minimap Button Bar, Raid Marker Bar, and Range datatext only.
+- **Mists of Pandaria Classic (5.5.x), Burning Crusade Classic Anniversary (2.5.x), Classic Era (1.15.x), and Titan Reforged - Chrono (3.80.x, China only)** — Location Panel, Minimap Button Bar, Raid Marker Bar, and Range datatext.
+
+Retail and WoW Forever are actively maintained and tested in-game. The Classic editions are supported but not tested in-game. If something doesn't work on any edition, please [open an issue](https://github.com/bloqaudio/ElvUI_Enhanced_Yet_Again/issues) and I'll work on a fix.
 
 ## Contributing
 

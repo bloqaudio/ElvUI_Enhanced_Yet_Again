@@ -64,8 +64,8 @@ function EEL:Initialize()
 		if E.Retail then
 			print(format(L['ENH_LOGIN_MSG'], E["media"].hexvaluecolor, EEL.version))
 		end
-		if E.Wrath then
-			print(format(L['ENH_LOGIN_MSG_WRATH'], E["media"].hexvaluecolor, EEL.version))
+		if not E.Retail and not E.Forever then
+			print(format(L['ENH_LOGIN_MSG_CLASSIC'], E["media"].hexvaluecolor, EEL.version))
 		end
 		if E.Forever then
 			print(format(L['ENH_LOGIN_MSG_FOREVER'], E["media"].hexvaluecolor, EEL.version))

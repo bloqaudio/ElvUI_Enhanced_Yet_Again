@@ -22,6 +22,18 @@ jobs:
           - flavor: forever
             toc: ElvUI_Enhanced_Forever.toc
             version_url: https://raw.githubusercontent.com/Gethe/wow-ui-source/forever/version.txt
+          - flavor: classic-era
+            toc: ElvUI_Enhanced_Vanilla.toc
+            version_url: https://raw.githubusercontent.com/Gethe/wow-ui-source/classic_era/version.txt
+          - flavor: tbc-anniversary
+            toc: ElvUI_Enhanced_TBC.toc
+            version_url: https://raw.githubusercontent.com/Gethe/wow-ui-source/classic_anniversary/version.txt
+          - flavor: mists
+            toc: ElvUI_Enhanced_Mists.toc
+            version_url: https://raw.githubusercontent.com/Gethe/wow-ui-source/classic/version.txt
+          - flavor: titan
+            toc: ElvUI_Enhanced_Wrath.toc
+            version_url: https://raw.githubusercontent.com/Gethe/wow-ui-source/classic_titan/version.txt
     steps:
       - name: Checkout
         uses: actions/checkout@v4
