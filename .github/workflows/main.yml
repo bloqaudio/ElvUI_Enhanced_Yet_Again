@@ -32,7 +32,7 @@ jobs:
           fetch-depth: 0
           ref: ${{ env.RELEASE_REF }}
 
-      - name: Build retail zip
+      - name: Build release zip
         id: package
         run: |
           set -euo pipefail
@@ -64,12 +64,34 @@ jobs:
         id: retail_meta
         run: ./.github/scripts/retail-release-metadata.sh
 
-      - name: Resolve Wago retail patch
+      - name: Resolve Forever release metadata
+        id: forever_meta
+        env:
+          WOW_UI_VERSION_URL: https://raw.githubusercontent.com/Gethe/wow-ui-source/forever/version.txt
+        run: ./.github/scripts/retail-release-metadata.sh
+
+      - name: Verify Forever version exists on CurseForge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          FOREVER_VERSION: ${{ steps.forever_meta.outputs.retail_version }}
+        run: |
+          set -euo pipefail
+          # The upload action silently drops unknown version names.
+          FOREVER_TYPE_ID=88568
+          if ! curl -fsS -H "X-Api-Token: ${CURSEFORGE_TOKEN}" https://wow.curseforge.com/api/game/versions \
+            | jq -e --argjson t "${FOREVER_TYPE_ID}" --arg v "${FOREVER_VERSION}" \
+              'any(.[]; .gameVersionTypeID == $t and .name == $v)' >/dev/null; then
+            echo "CurseForge has no Forever game version ${FOREVER_VERSION} yet" >&2
+            exit 1
+          fi
+
+      - name: Resolve Wago patches
         id: wago_patch
         run: |
           set -euo pipefail
-          PATCH=$(curl -fsSL https://addons.wago.io/api/data/game | jq -r '.live_patches.supported_retail_patches')
-          echo "patch=${PATCH}" >> "${GITHUB_OUTPUT}"
+          GAME_DATA=$(curl -fsSL https://addons.wago.io/api/data/game)
+          echo "retail=$(jq -r '.live_patches.supported_retail_patches' <<< "${GAME_DATA}")" >> "${GITHUB_OUTPUT}"
+          echo "forever=$(jq -r '.live_patches.supported_forever_patches' <<< "${GAME_DATA}")" >> "${GITHUB_OUTPUT}"
 
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
@@ -88,7 +110,7 @@ jobs:
           game_endpoint: wow
           file_path: ${{ steps.package.outputs.artifact }}
           display_name: ElvUI Enhanced (Yet) Again ${{ env.RELEASE_TAG }}
-          game_versions: "${{ steps.retail_meta.outputs.retail_version }}"
+          game_versions: "${{ steps.retail_meta.outputs.retail_version }},88568:${{ steps.forever_meta.outputs.retail_version }}"
           release_type: release
           changelog: "See release notes at https://github.com/bloqaudio/ElvUI_Enhanced_Yet_Again/releases/tag/${{ env.RELEASE_TAG }}"
           changelog_type: text
@@ -107,8 +129,9 @@ jobs:
           METADATA=$(jq -nc \
             --arg label "${RELEASE_TAG}" \
             --arg changelog "See release notes at https://github.com/bloqaudio/ElvUI_Enhanced_Yet_Again/releases/tag/${RELEASE_TAG}" \
-            --arg patch "${{ steps.wago_patch.outputs.patch }}" \
-            '{label:$label,stability:"stable",changelog:$changelog,supported_retail_patch:$patch}')
+            --arg retail "${{ steps.wago_patch.outputs.retail }}" \
+            --arg forever "${{ steps.wago_patch.outputs.forever }}" \
+            '{label:$label,stability:"stable",changelog:$changelog,supported_retail_patches:[$retail],supported_forever_patches:[$forever]}')
 
           curl -fsS -X POST \
             -H "Authorization: Bearer ${WAGO_API_TOKEN}" \

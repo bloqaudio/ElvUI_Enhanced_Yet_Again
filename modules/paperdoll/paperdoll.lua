@@ -3,6 +3,7 @@ local PD = E:NewModule('PaperDoll', 'AceEvent-3.0', 'AceTimer-3.0');
 
 -- WoW 11.x API compatibility
 local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+local GetDetailedItemLevelInfo = C_Item and C_Item.GetDetailedItemLevelInfo or GetDetailedItemLevelInfo
 
 local initialized = false
 local originalInspectFrameUpdateTabs
@@ -144,9 +145,16 @@ function PD:GetItemLevel(unit, slot)
   local itemlevel = GetSlotItemLevel(unit, slot)
   if itemlevel then
     return itemlevel
-  else
-    local level = tonumber(GetRealItemLevel(itemLink))
-    return level
+  end
+
+  local level = GetRealItemLevel(itemLink)
+  if level then
+    return tonumber(level)
+  end
+
+  -- Forever tooltips omit the item level line
+  if itemLink and GetDetailedItemLevelInfo then
+    return GetDetailedItemLevelInfo(itemLink)
   end
 end
 
@@ -191,8 +199,13 @@ function PD:OnAddonLoaded(event, name)
   self:BuildInfoText("Inspect")
 
   -- hook to inspect frame update
-  originalInspectFrameUpdateTabs = _G.InspectFrame_UpdateTabs
-  _G.InspectFrame_UpdateTabs = PD.InspectFrame_UpdateTabsComplete
+  if _G.InspectFrame_UpdateTabs then
+    originalInspectFrameUpdateTabs = _G.InspectFrame_UpdateTabs
+    _G.InspectFrame_UpdateTabs = PD.InspectFrame_UpdateTabsComplete
+  elseif InspectFrame and InspectFrame.UpdateTabs then
+    -- Forever moved tab updates onto InspectFrameMixin
+    hooksecurefunc(InspectFrame, "UpdateTabs", function() PD:DelayUpdateInfo(true) end)
+  end
   
   -- update player info
   PD:DelayUpdateInfo(true)

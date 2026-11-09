@@ -204,6 +204,7 @@ local function ConfigTable()
                 type = "group",
                 name = L["Quick Access"],
                 guiInline = true,
+                hidden = function() return not E.Retail end,
                 args = {
                     vaultlauncher = {
                         order = 1,
