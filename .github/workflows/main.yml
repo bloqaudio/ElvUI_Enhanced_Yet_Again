@@ -43,6 +43,7 @@ jobs:
 
           mkdir -p "${PKG_ROOT}"
           rsync -a ./ "${PKG_ROOT}/" \
+            --exclude "/dist/" \
             --exclude ".git/" \
             --exclude ".github/" \
             --exclude "NOTES/" \
@@ -53,6 +54,13 @@ jobs:
             --exclude "GEMINI.md" \
             --exclude "*.bak" \
             --exclude "*.md"
+
+          # The TOCs in the repo carry a placeholder; the tag is the version.
+          sed -i "s/@project-version@/${VERSION#v}/" "${PKG_ROOT}"/*.toc
+          if grep -q "@project-version@" "${PKG_ROOT}"/*.toc; then
+            echo "A TOC still has the version placeholder" >&2
+            exit 1
+          fi
 
           (cd "${DIST_DIR}" && zip -r "../${ADDON_NAME}-${VERSION}.zip" "${ADDON_NAME}")
           echo "artifact=${ADDON_NAME}-${VERSION}.zip" >> "${GITHUB_OUTPUT}"

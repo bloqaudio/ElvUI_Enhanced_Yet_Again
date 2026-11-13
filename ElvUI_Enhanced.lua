@@ -11,6 +11,10 @@ local IsAddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
 local LoadAddOn = C_AddOns and C_AddOns.LoadAddOn
 
 EEL.version = GetAddOnMetadata("ElvUI_Enhanced", "Version")
+-- The release workflow fills in the version; a copy run from the repo has none.
+if not EEL.version or EEL.version:find("@", 1, true) then
+	EEL.version = L["development build"]
+end
 EEL.title = format('|cff00c0fa%s|r|cffff8000%s|r|cff00c0fa%s|r', "ElvUI ", "Enhanced ", "(Yet) Again")
 EEL.config = {}
 EEL.elvV = tonumber(E.version)
