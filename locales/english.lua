@@ -7,6 +7,7 @@ L["ENH_LOGIN_MSG"] = "You are using |cff1784d1ElvUI Enhanced (Yet) Again|r |cfff
 L["ENH_LOGIN_MSG_CLASSIC"] = "You are using |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(Classic)|r version %s%s|r."
 L["ENH_LOGIN_MSG_FOREVER"] = "You are using |cff1784d1ElvUI Enhanced (Yet) Again|r |cffff8000(Forever)|r version %s%s|r."
 L["MSG_EEL_ELV_OUTDATED"] = "Your version of ElvUI is older than recommended to use with |cff1784d1ElvUI Enhanced (Yet) Again|r. Your version is |cff1784d1%.2f|r (recommended is |cff1784d1%.2f|r). Please update your ElvUI."
+L["development build"] = "development build"
 
 --OLD
 
