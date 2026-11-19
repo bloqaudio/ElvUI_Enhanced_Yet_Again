@@ -529,6 +529,27 @@ local function HookButtonIconUpdates(frame, name)
 	end
 end
 
+-- Some addons hide a button after it has been collected. Only the button's own
+-- shown state counts: the bar hiding (pet battles) mustn't trigger a layout.
+local function OnButtonVisibilityChanged(frame)
+	local shown = frame:IsShown()
+	if frame.eelMinimapButtonShown ~= shown then
+		frame.eelMinimapButtonShown = shown
+		MB:DelayedUpdateLayout()
+	end
+end
+
+local function WatchButtonVisibility(frame)
+	if frame.eelMinimapButtonVisibilityHooked then
+		return
+	end
+
+	frame.eelMinimapButtonShown = frame:IsShown()
+	frame:HookScript("OnShow", OnButtonVisibilityChanged)
+	frame:HookScript("OnHide", OnButtonVisibilityChanged)
+	frame.eelMinimapButtonVisibilityHooked = true
+end
+
 function MB:SkinButton(frame)
 	if not frame then return end
 	if (frame:GetObjectType() ~= "Button") or not frame:IsVisible() then return end
@@ -628,6 +649,7 @@ function MB:SkinButton(frame)
 				end
 			end
 		end
+		WatchButtonVisibility(frame)
 		tinsert(moveButtons, name)
 		return
 	end
@@ -686,6 +708,7 @@ function MB:SkinButton(frame)
 	end
 	frame:SetTemplate("Transparent")
 
+	WatchButtonVisibility(frame)
 	tinsert(moveButtons, name)
 	frame.isSkinned = true
 end
@@ -728,17 +751,29 @@ function MB:UpdateLayout()
 
 	self:UpdateDefaultAnchor()
 
+	local noAnchor = E.minimapbuttons.db.skinStyle == 'NOANCHOR'
+	local function isPlaced(frame)
+		return frame and frame.original and (noAnchor or frame:IsShown())
+	end
+
+	local numPlaced = 0
+	for i = 1, #moveButtons do
+		if isPlaced(_G[moveButtons[i]]) then
+			numPlaced = numPlaced + 1
+		end
+	end
+
 	local AnchorX, AnchorY, MaxX = 0, 1, E.minimapbuttons.db.buttonsPerRow
 	local ButtonsPerRow = E.minimapbuttons.db.buttonsPerRow
-	local NumColumns = ceil(#moveButtons / ButtonsPerRow)
+	local NumColumns = ceil(numPlaced / ButtonsPerRow)
 	local Spacing, Mult = 2, 1
 	local Size = E.minimapbuttons.db.buttonSize
 	local ActualButtons, Maxed = 0
 	local direction = E.minimapbuttons.db.layoutDirection == 'NORMAL'
 	local offset = direction and -2 or 2
 
-	if NumColumns == 1 and ButtonsPerRow > #moveButtons then
-		ButtonsPerRow = #moveButtons
+	if NumColumns == 1 and ButtonsPerRow > numPlaced then
+		ButtonsPerRow = numPlaced
 	end
 
 	if E.minimapbuttons.db.skinStyle == 'HORIZONTAL' then
@@ -754,7 +789,7 @@ function MB:UpdateLayout()
 
 	for i = 1, #moveButtons do
 		local frame = _G[moveButtons[i]]
-		if frame and frame.original then
+		if isPlaced(frame) then
 			AnchorX = AnchorX + 1
 			ActualButtons = ActualButtons + 1
 			if AnchorX > MaxX then
